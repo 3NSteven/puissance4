@@ -20,6 +20,7 @@ typedef struct joueur
     char Jnom[MAX_PSEUDO_LEN]; // Le nom du joueur
     char Jsign; // Quel jeton il posséde
     bool isIA; // Si c'est une IA
+    int whichIA;
     int partieGagner;
 }joueur;
 

@@ -44,7 +44,12 @@ void creerGrille(char (*grille2)[MAX_COLONNE]){
 */
 int ajouterJeton(char (*grille2)[MAX_COLONNE], char signe, int colonne){
 
-    for (int i = 5; i >= 0; i--)
+    if(colonne > 6 || colonne < 0){ //si le joueur n'a pas choisi une colonne entre 1 et 7
+        printf("You must select a column between 1 and 7:\n");
+        return -1;
+    }
+
+    for (int i = 5; i >= 0; i--)    //verifie que la case n'est pas deja remplie (recherche de bas en haut pour savoir ou le jeton ajoute va atterir)
     {
 
         if( (*(*(grille2+i)+colonne)) == ' ')
@@ -55,7 +60,7 @@ int ajouterJeton(char (*grille2)[MAX_COLONNE], char signe, int colonne){
         }
         else if( i == 0 ){
             afficheGrille(grille2); 
-            printf("This column is full ! Choose another one:\n\n");
+            printf("This column is full ! Select another one:\n");
             return -1;
         }
 
@@ -74,43 +79,37 @@ int partie(joueur* player, int round){
     
     int fin = 0; //definie la fin d'une partie
     int tour = 0; //definie le nombre de tour joué
+    char choixS[20];
     int choix;
 
     while (!fin)
     {
-       if (tour%2 == 0) // Tour du Joueur1
-       {
-            if ( (player + 0)->isIA == true )    //si le joueur1 est une IA
+       
+        if ( (player + (tour%2))->isIA == true )    //si le joueur1 est une IA
             {   
-                //((player + 0)->Jnom )
+            //((player + 0)->Jnom )
+            switch ( (player + tour%2)->whichIA)
+            {
+            case 0:
+                //choix = ia0(grille, (player + 0)->Jsign);
+                break;
+            case 1:
 
-                
+                break;
+            default:
+                    printf("No function for this AI in the files.\n");
+                break;
             }
-            else{
-                printf("Select a column between 1 and 7:\n");
-                scanf("%d", &choix);
-                while(ajouterJeton(grille, (player + 0 )->Jsign, choix) == -1){
-                    scanf("%d", &choix);
-                }
-            }
-       }
-       else // Tour du Joueur2
-       {
-           if ( (player + 10)->isIA == true )    //si le joueur1 est une IA
-            {   
-                //((player + 1)->Jnom )
 
-                
+        }
+        else{
+            printf("Select a column between 1 and 7:\n");
+            do{
+                scanf("%s", choixS);
+                choix = atoi(choixS);
             }
-            else{
-                printf("Select a column between 1 and 7:\n");
-                scanf("%d", &choix);
-                while(ajouterJeton(grille, (player + 1 )->Jsign, choix) == -1){
-                    scanf("%d", &choix);
-                }
-            }    
-       }
-
+            while(ajouterJeton(grille, (player + tour%2 )->Jsign, choix-1) == -1);
+        }
        tour++;
     }
 
@@ -139,8 +138,8 @@ int fixesettings(char *J1, char *J2, joueur* J){
     }
 
     if(!findIA){
-        printf("Il n'y a aucun nom d'IA parmis les noms des joueurs.\n");
-        printf("Ex: './main Charles IA0' ou encore './main IA1 Pablo'\n");
+        printf("There is no AI's name among the players' names.\n");
+        printf("Ex: './main Charles IA0' or even './main IA1 Pablo'\n");
         return -1;
     }
     
@@ -156,6 +155,7 @@ int fixesettings(char *J1, char *J2, joueur* J){
                 if ( strcmp(J1, IA[i]) == 0)
                 {
                     (J+0)->isIA = true;
+                    (J+0)->whichIA = i;
                     break;
                 }
                 else{ (J+0)->isIA = false; }
@@ -172,6 +172,7 @@ int fixesettings(char *J1, char *J2, joueur* J){
                 if (strcmp(J2, IA[i]) == 0 )
                 {
                     (J+1)->isIA = true;
+                    (J+1)->whichIA = i;
                     break;
                 }
                 else{ (J+1)->isIA = false; }
@@ -207,19 +208,6 @@ int main(int argc, char * argv[]){
     //strcpy(joueurs[i].Jnom, Nomjoueur[i]);
 
     fixesettings(argv[1], argv[2], joueurs);
-
-    printf("%s\n", joueurs[0].Jnom);
-    printf("%s\n", joueurs[1].Jnom);
-
-    printf("%c\n", joueurs[0].Jsign);
-    printf("%c\n", joueurs[1].Jsign);
-
-    printf("%d\n", joueurs[0].isIA);
-    printf("%d\n", joueurs[1].isIA);
-
-    printf("%d\n", joueurs[0].partieGagner);
-    printf("%d\n", joueurs[1].partieGagner);
-
 
     /*
     for (int i = 0; i < 7; i++)
