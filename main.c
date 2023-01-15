@@ -102,12 +102,10 @@ int verifGrille(char (*grille2)[MAX_COLONNE] ){ //verifie si quatre jetons du me
             
             if (count_x >= 4){
                 printf("Victoire !!\n");
-                break;
                 return 1;
             }
             if (count_o >= 4){
                 printf("Victoire !!\n");
-                break;
                 return 2;
             }
         }
@@ -122,12 +120,10 @@ int verifGrille(char (*grille2)[MAX_COLONNE] ){ //verifie si quatre jetons du me
         {
             if(victoireX >= 4 ){
                 printf("Victoire !!\n");
-                break;
                 return 1;
             }
             else if(victoireO >= 4){
                 printf("Victoire !!\n");
-                break;
                 return 2;
             }
             else if( (*(*(grille2+i)+colonne)) == 'X')
@@ -191,11 +187,25 @@ int partie(joueur* player, int round){
             while(ajouterJeton(grille, (player + tour%2 )->Jsign, choix-1) == -1);
         }
 
-        verifGrille(grille);
+        switch(verifGrille(grille))
+        {
+            case 0:
+                break;
+            case 1:
+                printf("The player %s won the game\n", (player + tour%2 )->Jnom );
+                printf("--------GAME %d OVER---------\n", round);
+                return 1;
+                break;
+            case 2:
+                printf("The player %s won the game\n", (player + tour%2 )->Jnom );
+                printf("--------GAME %d OVER---------\n", round);
+                return 2;
+                break;
+        }
         tour++;
     }
 
-    printf("--------GAME %d OVER---------\n\n", round);
+    
 
 }
 
@@ -288,9 +298,19 @@ int main(int argc, char * argv[]){
     joueur* joueurs = malloc( 2 * sizeof *joueurs);
 
     fixesettings(argv[1], argv[2], joueurs);
-    
+
+    int gagnant;
     for(int round = 1; round<=nbparties; round++){   //chaque partie
-        partie(joueurs, round);
+        gagnant = partie(joueurs, round);
+        
+        if(gagnant == 0){
+            partieNulles++;
+        }
+        else{
+            joueurs[gagnant-1].partieGagner++;
+        }
     }
+
+    return 0;
     
 }

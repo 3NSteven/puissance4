@@ -24,7 +24,9 @@ typedef struct joueur
     int partieGagner;
 }joueur;
 
+int partieNulles = 0;
 
 int partie(joueur* player, int round);
 
 #endif
+
