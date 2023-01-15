@@ -1,6 +1,6 @@
 #include "globale.h"
 
-#define NIVEAU_DE_RECHERCHE 3
+#define NIVEAU_DE_RECHERCHE 2
 
 // Time : 1:05:45 / 1:27:28
 
@@ -11,11 +11,9 @@ typedef struct col_val {
 int count_case(int *tab, char signe){
 	int nombre = 0;
 	for (int i = 0; i < 4; i++)
-	{
-		if(tab[i] == signe){
+		if(tab[i] == signe)
 			nombre++;
-		}
-	}
+	
 	return nombre;
 }
 
@@ -23,20 +21,20 @@ int make_score(int jeton, int libre, int enemy){
 
 	int score = 0;
 
-	if (jeton == 4){
-		score = score+9999;
-	}
-	else if (jeton == 3 && libre == 1){
-		score = score+100;
-	}
-	else if (jeton == 2 && libre == 2){
-		score = score+30;
-	}
+	if (jeton == 4)
+		score = score+99999;
+
+	else if (jeton == 3 && libre == 1)
+		score = score+50;
+
+	else if (jeton == 2 && libre == 2)
+		score = score+10;
+	
 
 	if (enemy == 3 && libre == 1)
-	{
 		score = score-80;
-	}
+	else if (enemy == 4)
+		score = score-99999;
 
 	return score;
 }
@@ -160,6 +158,7 @@ int position_score(char (*grille2)[MAX_COLONNE], char signe){
 		}
 	}
 
+	printf("score = score(%d)\n", score);
 	return score;
 }
 
@@ -239,53 +238,43 @@ col_val minmax(char (*grille2)[MAX_COLONNE], int profondeur, bool maximazingPlay
 		enemy = 'O';
 	else
 		enemy = 'X';	
-	
-	int nb_valide = nb_move_valide(grille2);
-	
 
-	//printf("\n profondeur=%d, verifgrille=%d", profondeur, verifGrille(grille2, signe));
-	if(profondeur == 0 || verifGrille(grille2, signe) != 0 || nb_valide == 0){
+	int nb_valide = nb_move_valide(grille2);
+	printf("enemy=%c\n", enemy);
+	afficheGrille(grille2);
+	printf("enemy gagne=%d\n", verifGrille(grille2, enemy));
+	printf("profondeur=%d\n", profondeur);
+
+	if(profondeur == 0 || verifGrille(grille2, signe) == 1 || verifGrille(grille2, enemy) == 1 || nb_valide == 0){
 		col_val.colonne = -1;
 		if (profondeur != 0)
 		{
-			if(signe == 'X'){	//si le signe d'ia2 est X
-				if (verifGrille(grille2, signe) == 2)	//la victoire de O est a eviter absolument
-					col_val.valeur = (int) -999999;
-				else if (verifGrille(grille2, signe) == 1)	//la victoire de X est a chercher absolument
-					col_val.valeur = (int) 999999;
-				else
-					col_val.valeur = 0;
+			printf("profondeur!=0, IA2=%d(%c), IA1=%d(%c), nb_valide=%d\n", verifGrille(grille2, signe), signe, verifGrille(grille2, enemy), enemy, nb_valide);
+			if (verifGrille(grille2, signe) == 1){	//la victoire est a chercher absolument
+				col_val.valeur = (int) 999999;
+				printf("Le signe (%c) va gagner il faut reussir a tous pris\n", signe);
 			}
-			else if(signe == 'O'){	//si le signe d'ia2 est O
-				if (verifGrille(grille2, signe) == 1)	//la victoire de X est a eviter absolument
-					col_val.valeur = (int) -999999;
-				else if (verifGrille(grille2, signe) == 2)	//la victoire de O est a chercher absolument
-					col_val.valeur = (int) 999999;
-				else
-					col_val.valeur = 0;
-
+			else if (verifGrille(grille2, enemy) == 1){	//la victoire de l'enemi est a eviter absolument
+				col_val.valeur = (int) -999999;
+				printf("Le signe (%c) va gagner il faut eviter a tous pris\n", enemy);
 			}
-			
+			else
+				col_val.valeur = 0;	
 		}
 		else{
 			col_val.valeur = position_score(grille2, signe);
 		}
-		//printf("\n deep=%d, valeur=%d, colonne=%d \n", profondeur, col_val.valeur, col_val.colonne);
+		printf("\n deep=%d, valeur=%d \n", profondeur, col_val.valeur);
 		return col_val;
 	}
-
-	printf("\n LOOOL %d\n", maximazingPlayer);
 
 	int pos[nb_valide];
 	position_move_valide(grille2, pos);
 
 	if (maximazingPlayer)
 	{
-		printf("\n IA = TRUE \n");
 		col_val.valeur = (int) -999999;
-
 		col_val.colonne = pos[rand()%nb_valide]; // On prend une colonne au hazar parmis les disponibles
-		printf("nb_position possible IA %d\n", nb_valide);
 
 		for (int c = 0; c < nb_valide; c++)
 		{
@@ -294,30 +283,25 @@ col_val minmax(char (*grille2)[MAX_COLONNE], int profondeur, bool maximazingPlay
 				memcpy(grille_temp[j], grille2[j], MAX_COLONNE);
 			
 			ajouterJeton(grille_temp, signe, pos[c]);
-			afficheGrille(grille_temp);
-
 			new_score = minmax(grille_temp, (profondeur-1), false, signe);
 			if (new_score.valeur > col_val.valeur)
 			{
 				col_val.colonne = pos[c];
 				col_val.valeur = new_score.valeur;
 			}
-			printf("On fais des partie max %d, valeur=%d, col=%d\n", pos[c], col_val.valeur, col_val.colonne);
 		}
 
-		printf("\n deep=%d, valeur=%d, colonne=%d \n", profondeur, col_val.valeur, col_val.colonne);
 		return col_val;
-		
 	}
 	else{
-		printf("\n IA = FALSE \n");
+		//printf("\n IA = FALSE \n");
 		col_val.valeur = (int) 999999;
 
 		col_val.colonne = pos[rand()%nb_valide]; // On prend une colonne au hazar parmis les disponibles
-		printf("nb_position possible Joueur %d\n", nb_valide);
-		for (int i = 0; i < nb_valide; i++)
-			printf("[%d]", pos[i]);
-		printf("\n");
+		//printf("nb_position possible Joueur %d\n", nb_valide);
+		//for (int i = 0; i < nb_valide; i++)
+			//printf("[%d]", pos[i]);
+		//printf("\n");
 
 		for (int c = 0; c < nb_valide; c++)
 		{
@@ -326,7 +310,7 @@ col_val minmax(char (*grille2)[MAX_COLONNE], int profondeur, bool maximazingPlay
 				memcpy(grille_temp[j], grille2[j], MAX_COLONNE);
 			
 			ajouterJeton(grille_temp, enemy, pos[c]); // L'enemy pose un jeton
-			afficheGrille(grille_temp);
+			//afficheGrille(grille_temp);
 			// On calcule a nouveau notre score après le jeu de l'enemy
 			new_score = minmax(grille_temp, (profondeur-1), true, signe);
 			if (new_score.valeur < col_val.valeur)
@@ -334,10 +318,10 @@ col_val minmax(char (*grille2)[MAX_COLONNE], int profondeur, bool maximazingPlay
 				col_val.colonne = pos[c];
 				col_val.valeur = new_score.valeur;
 			}
-			printf("On fais des partie min %d, valeur=%d, col=%d\n", pos[c], col_val.valeur, col_val.colonne);
+			//printf("On fais des partie min %d, valeur=%d, col=%d\n", pos[c], col_val.valeur, col_val.colonne);
 		}
-		printf("----------------------------------");
-		printf("\n deep=%d, valeur=%d, colonne=%d \n", profondeur, col_val.valeur, col_val.colonne);
+		//printf("----------------------------------");
+		//printf("\n deep=%d, valeur=%d, colonne=%d \n", profondeur, col_val.valeur, col_val.colonne);
 		return col_val;
 	}
 	

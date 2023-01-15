@@ -54,15 +54,11 @@ int partie(joueur* player, int round){
         {
             case 0: // Rien a signaler
                 break;
-            case 1: // Le joueur 1 gagne la partie
+            case 1: // Le joueur actuelle gagne la partie
                 printf("The player %s won the game\n", (player + tour%2 )->Jnom );
                 printf("--------GAME %d OVER---------\n", round);
-                return 1;
-                break;
-            case 2: // Le joueur 2 gagne la partie
-                printf("The player %s won the game\n", (player + tour%2 )->Jnom );
-                printf("--------GAME %d OVER---------\n", round);
-                return 2;
+                
+                return (tour%2)+1;
                 break;
         }
 
@@ -75,7 +71,7 @@ int partie(joueur* player, int round){
         tour++;
     }
 
-    return -2;  //erreur
+    return -2;
 
 }
 
@@ -131,7 +127,7 @@ void makelog(joueur * J, int nulle){
     // On écrit dans un fichier le rapport de la partie
     FILE *log;
     log = fopen(buffer, "w+");
-    fprintf(log, "%s\t%d\n%s\t%d\nTie\t%d\nTotal\t%d\n",
+    fprintf(log, "%s\t%d\n%s\t%d\nDraw\t%d\nTotal\t%d\n",
      J[0].Jnom,
       J[0].partieGagner,
        J[1].Jnom,
@@ -177,7 +173,7 @@ int main(int argc, char * argv[]){
         }
     }
 
-    printf("SUMMARY:\n%s: %d victories\n%s: %d victories\nTie: %d\n",
+    printf("SUMMARY:\n%s: %d victories\n%s: %d victories\nDraw: %d\n",
      joueurs[0].Jnom,
       joueurs[0].partieGagner,
        joueurs[1].Jnom,

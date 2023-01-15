@@ -95,13 +95,7 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
             
             if (count >= 4){
                 printf("\nVictory !!\n");
-                if(signe == 'X'){
-                    return 1;
-                }
-                else if(signe == 'O')
-                {
-                    return 2;
-                }
+                return 1;
             }
         }   
     }
@@ -120,13 +114,8 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
             
             if (count >= 4){
                 printf("\nVictory !!\n");
-                if(signe == 'X'){
-                    return 1;
-                }
-                else if(signe == 'O')
-                {
-                    return 2;
-                }
+                return 1;
+                
             }
         }
     }
@@ -137,12 +126,7 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
         for(int j = 3; j < MAX_COLONNE ; j++){            
             if( ((*(*(grille2+i)+j)) == signe) && ((*(*(grille2+(i-1))+(j-1))) == signe) && ((*(*(grille2+(i-2))+(j-2))) == signe) && ((*(*(grille2+(i-3))+(j-3))) == signe) ){
                 printf("\nVictory !!\n");
-                if (signe == 'X'){
-                    return 1;
-                }
-                else{
-                    return 2;
-                }
+                return 1; 
             }
         }
     }
@@ -151,12 +135,7 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
         for(int j = 0; j < (MAX_COLONNE-3) ; j++){            
             if( ((*(*(grille2+i)+j)) == signe) && ((*(*(grille2+(i-1))+(j+1))) == signe) && ((*(*(grille2+(i-2))+(j+2))) == signe) && ((*(*(grille2+(i-3))+(j+3))) == signe) ){
                 printf("\nVictory !!\n");
-                if (signe == 'X'){
-                    return 1;
-                }
-                else{
-                    return 2;
-                }
+                return 1;
             }
         }
     }
