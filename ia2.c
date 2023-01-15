@@ -1,14 +1,12 @@
 #include "globale.h"
 
-#define NIVEAU_DE_RECHERCHE 2
-
-// Time : 1:05:45 / 1:27:28
-
-typedef struct col_val {
-	int colonne, valeur;
-}col_val;
-
-int count_case(int *tab, char signe){
+/*
+	Compte le nombres de signe correspondant au signe dans le tableau
+	Exemple:
+	fenetre[4] = {'X', 'X', 'X', ' '}
+	compte_case(fenetre, 'X') // return 4
+*/
+int compte_case(int *tab, char signe){
 	int nombre = 0;
 	for (int i = 0; i < 4; i++)
 		if(tab[i] == signe)
@@ -17,24 +15,27 @@ int count_case(int *tab, char signe){
 	return nombre;
 }
 
-int make_score(int jeton, int libre, int enemy){
+/*
+	Calcule le score par rapport au jeton
+*/
+int calcule_score(int jeton, int libre, int enemy){
 
 	int score = 0;
 
-	if (jeton == 4)
-		score = score+99999;
+	if (jeton == 4) // On aligne 4 jeton !!!!
+		score = score+9999;
 
-	else if (jeton == 3 && libre == 1)
-		score = score+50;
+	else if (jeton == 3 && libre == 1) // On aligne 3 jeton
+		score = score+5;
 
-	else if (jeton == 2 && libre == 2)
-		score = score+10;
+	else if (jeton == 2 && libre == 2) // On aligne 2 jeton
+		score = score+2;
 	
 
-	if (enemy == 3 && libre == 1)
-		score = score-80;
-	else if (enemy == 4)
-		score = score-99999;
+	if (enemy == 3 && libre == 1) // enemy aligne 3 jeton
+		score = score-20;
+	else if (enemy == 4) // enemy aligne 4 jeton !!!!
+		score = score-9999;
 
 	return score;
 }
@@ -53,61 +54,67 @@ int position_score(char (*grille2)[MAX_COLONNE], char signe){
 
 	// Calcule le score du centre
 	int tab_centre[MAX_LINE];
-	for (int i = 0; i < MAX_LINE; i++) // On prend la colonne du milieu
+	for (int i = 0; i < MAX_LINE; i++) // On prend les signes de la colonne du milieu dans tab_centre
 		tab_centre[i] = (*(*(grille2+i)+(MAX_COLONNE/2)));
 	
-	int nombre = 1;
-	for (int i = 0; i < MAX_LINE; i++) // On compte le nombre de signe au milieu
+	int nombre = 0;
+	for (int i = 0; i < MAX_LINE; i++) // Pour chaque signe que l'on posséde deja au milieu nombre+1
 		if(tab_centre[i] == signe)
 			nombre++;
 		
-	score = score + nombre*6;
+	score = score + nombre*3; // On augmente le score pour chaque signe que l'on possede au milieu
 	
+	//printf("score apres centre:%d\n", score);
 
 	// Horizontal
 	int tab_ligne[MAX_COLONNE], fenetre[4]; 
-	for (int r = 0; r < MAX_LINE; r++)
+	for (int r = 0; r < MAX_LINE; r++) // Pour chaque ligne
 	{
-		for (int j = 0; j < MAX_COLONNE; j++) // Enregistre la ligne r
+		for (int j = 0; j < MAX_COLONNE; j++) // Enregistre la ligne dans tab_ligne
 			tab_ligne[j] = (*(*(grille2+r)+j));
 		
-		for (int c = 0; c < (MAX_COLONNE-3); c++) // De colonne 0 à 4
+		for (int c = 0; c < (MAX_COLONNE-3); c++) // Des colonnes [0-4], [1-5], [2-6], [3-7]
 		{
-			// window = row_array[0:0+4] prend les colonnes de [0-4]
-			// window = row_array[1:1+4] prend les colonnes de [1-5]
-			// window = row_array[2:2+4] prend les colonnes de [2-6]
-			// window = row_array[3:3+4] prend les colonnes de [3-7]
+			// fenetre = tab_ligne[0:0+4] prend les colonnes de [0-4]
+			// fenetre = tab_ligne[1:1+4] prend les colonnes de [1-5]
+			// fenetre = tab_ligne[2:2+4] prend les colonnes de [2-6]
+			// fenetre = tab_ligne[3:3+4] prend les colonnes de [3-7]
 			memcpy(fenetre, tab_ligne+c, sizeof(int)*4);
 			
-			jeton = count_case(fenetre, signe);
-			libre = count_case(fenetre, ' ');
-			op_jeton = count_case(fenetre, op_signe);
+			// compte parmis les 4 cases aligné le nb de signe, de vide et de signe oposé
+			jeton = compte_case(fenetre, signe);
+			libre = compte_case(fenetre, ' ');
+			op_jeton = compte_case(fenetre, op_signe);
 
-			score = score + make_score(jeton, libre, op_jeton);
+			score = score + calcule_score(jeton, libre, op_jeton);
 		}
 	}
+
+	//printf("score après horizontal:%d\n", score);
 
 	
 	// Verticale
 	int tab_colonne[MAX_COLONNE]; 
-	for (int c = 0; c < MAX_COLONNE; c++)
+	for (int c = 0; c < MAX_COLONNE; c++) // Pour chaque colonne
 	{
-		for (int j = 0; j < MAX_LINE; j++) // Enregistre la colonne c
+		for (int j = 0; j < MAX_LINE; j++) // Enregistre la colonne dans tab_colonne
 			tab_colonne[j] = (*(*(grille2+j)+c));
 
 		for (int r = 0; r < (MAX_LINE-3); r++)
 		{
 			memcpy(fenetre, tab_colonne+r, sizeof(int)*4);
 
-			jeton = count_case(fenetre, signe);
-			libre = count_case(fenetre, ' ');
-			op_jeton = count_case(fenetre, op_signe);
+			// compte parmis les 4 cases aligné le nb de signe, de vide et de signe oposé
+			jeton = compte_case(fenetre, signe);
+			libre = compte_case(fenetre, ' ');
+			op_jeton = compte_case(fenetre, op_signe);
 
-			score = score + make_score(jeton, libre, op_jeton);
+			score = score + calcule_score(jeton, libre, op_jeton);
 		}
 		
 	}
 
+	//printf("score apres Verticale:%d\n", score);
 
 	
 	// Diagonale de bas gauche à haut droite
@@ -125,15 +132,16 @@ int position_score(char (*grille2)[MAX_COLONNE], char signe){
 				fenetre[i] = (*(*(grille2+r+i)+c+i));
 			}
 
-			jeton = count_case(fenetre, signe);
-			libre = count_case(fenetre, ' ');
-			op_jeton = count_case(fenetre, op_signe);
+			jeton = compte_case(fenetre, signe);
+			libre = compte_case(fenetre, ' ');
+			op_jeton = compte_case(fenetre, op_signe);
 
-			score = score + make_score(jeton, libre, op_jeton);
+			score = score + calcule_score(jeton, libre, op_jeton);
 		}
 	}
-	
 
+	//printf("score apres bas gauche à haut droite:%d\n", score);
+	
 	
 	// Diagonale de haut gauche à bas droit
 	for (int r = 0; r < (MAX_LINE-3); r++)
@@ -150,18 +158,19 @@ int position_score(char (*grille2)[MAX_COLONNE], char signe){
 				fenetre[i] = (*(*(grille2+r+(3-i))+c+i));
 			}
 
-			jeton = count_case(fenetre, signe);
-			libre = count_case(fenetre, ' ');
-			op_jeton = count_case(fenetre, op_signe);
+			jeton = compte_case(fenetre, signe);
+			libre = compte_case(fenetre, ' ');
+			op_jeton = compte_case(fenetre, op_signe);
 
-			score = score + make_score(jeton, libre, op_jeton);
+			score = score + calcule_score(jeton, libre, op_jeton);
 		}
 	}
 
-	printf("score = score(%d)\n", score);
+	//printf("score apres haut gauche à bas droit:%d\n", score);
+
+	//printf("score = score(%d)\n", score);
 	return score;
 }
-
 
 
 // Nombre de colonnes jouables
@@ -175,7 +184,6 @@ int nb_move_valide(char (*grille2)[MAX_COLONNE]){
 	}
 	return count;
 }
-
 
 
 // Repertorie toutes les colonnes jouables
@@ -214,7 +222,12 @@ int select_meilleur_move(char (*grille2)[MAX_COLONNE], char signe){
 			memcpy(grille_temp[j], grille2[j], MAX_COLONNE);
 
 		ajouterJeton(grille_temp, signe, position_valide[i]);
-		score = position_score(grille_temp, signe);
+		
+        //printf("col %d:\n", (position_valide[i]+1));
+
+        score = position_score(grille_temp, signe);
+        
+        //printf("col %d, value %d\n", (position_valide[i]+1), score);
 
 		if (score > best_score){
 			best_score = score;
@@ -222,124 +235,14 @@ int select_meilleur_move(char (*grille2)[MAX_COLONNE], char signe){
 		}
 	}
 	
-
 	return best_colonne;
-
-}
-
-col_val minmax(char (*grille2)[MAX_COLONNE], int profondeur, bool maximazingPlayer, char signe){
-
-	//int resultat = verifGrille(grille2, (player + tour%2 )->Jsign);
-	col_val col_val, new_score;
-	int value, colonne;
-	char enemy;
-
-	if (signe == 'X')
-		enemy = 'O';
-	else
-		enemy = 'X';	
-
-	int nb_valide = nb_move_valide(grille2);
-	printf("enemy=%c\n", enemy);
-	afficheGrille(grille2);
-	printf("enemy gagne=%d\n", verifGrille(grille2, enemy));
-	printf("profondeur=%d\n", profondeur);
-
-	if(profondeur == 0 || verifGrille(grille2, signe) == 1 || verifGrille(grille2, enemy) == 1 || nb_valide == 0){
-		col_val.colonne = -1;
-		if (profondeur != 0)
-		{
-			printf("profondeur!=0, IA2=%d(%c), IA1=%d(%c), nb_valide=%d\n", verifGrille(grille2, signe), signe, verifGrille(grille2, enemy), enemy, nb_valide);
-			if (verifGrille(grille2, signe) == 1){	//la victoire est a chercher absolument
-				col_val.valeur = (int) 999999;
-				printf("Le signe (%c) va gagner il faut reussir a tous pris\n", signe);
-			}
-			else if (verifGrille(grille2, enemy) == 1){	//la victoire de l'enemi est a eviter absolument
-				col_val.valeur = (int) -999999;
-				printf("Le signe (%c) va gagner il faut eviter a tous pris\n", enemy);
-			}
-			else
-				col_val.valeur = 0;	
-		}
-		else{
-			col_val.valeur = position_score(grille2, signe);
-		}
-		printf("\n deep=%d, valeur=%d \n", profondeur, col_val.valeur);
-		return col_val;
-	}
-
-	int pos[nb_valide];
-	position_move_valide(grille2, pos);
-
-	if (maximazingPlayer)
-	{
-		col_val.valeur = (int) -999999;
-		col_val.colonne = pos[rand()%nb_valide]; // On prend une colonne au hazar parmis les disponibles
-
-		for (int c = 0; c < nb_valide; c++)
-		{
-			char grille_temp[MAX_LINE][MAX_COLONNE];
-			for ( int j = 0; j < MAX_LINE; ++j )
-				memcpy(grille_temp[j], grille2[j], MAX_COLONNE);
-			
-			ajouterJeton(grille_temp, signe, pos[c]);
-			new_score = minmax(grille_temp, (profondeur-1), false, signe);
-			if (new_score.valeur > col_val.valeur)
-			{
-				col_val.colonne = pos[c];
-				col_val.valeur = new_score.valeur;
-			}
-		}
-
-		return col_val;
-	}
-	else{
-		//printf("\n IA = FALSE \n");
-		col_val.valeur = (int) 999999;
-
-		col_val.colonne = pos[rand()%nb_valide]; // On prend une colonne au hazar parmis les disponibles
-		//printf("nb_position possible Joueur %d\n", nb_valide);
-		//for (int i = 0; i < nb_valide; i++)
-			//printf("[%d]", pos[i]);
-		//printf("\n");
-
-		for (int c = 0; c < nb_valide; c++)
-		{
-			char grille_temp[MAX_LINE][MAX_COLONNE];
-			for ( int j = 0; j < MAX_LINE; ++j )
-				memcpy(grille_temp[j], grille2[j], MAX_COLONNE);
-			
-			ajouterJeton(grille_temp, enemy, pos[c]); // L'enemy pose un jeton
-			//afficheGrille(grille_temp);
-			// On calcule a nouveau notre score après le jeu de l'enemy
-			new_score = minmax(grille_temp, (profondeur-1), true, signe);
-			if (new_score.valeur < col_val.valeur)
-			{
-				col_val.colonne = pos[c];
-				col_val.valeur = new_score.valeur;
-			}
-			//printf("On fais des partie min %d, valeur=%d, col=%d\n", pos[c], col_val.valeur, col_val.colonne);
-		}
-		//printf("----------------------------------");
-		//printf("\n deep=%d, valeur=%d, colonne=%d \n", profondeur, col_val.valeur, col_val.colonne);
-		return col_val;
-	}
-	
-	//return col_val;
 }
 
 
 /*
-    IA qui joue avec la strategie min-max
+    IA qui joue avec la strategie du meilleur coup disponible
 */
 int ia2(char (*grille2)[MAX_COLONNE], char signe){
-        
 
-	col_val resultat;
-	resultat = minmax(grille2, NIVEAU_DE_RECHERCHE, true, signe);
-
-	printf("\n %d, %d \n", resultat.valeur, resultat.colonne);
-
-    return resultat.colonne;
+	return select_meilleur_move(grille2, signe);
 }
-    

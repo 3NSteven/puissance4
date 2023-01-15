@@ -4,7 +4,6 @@ int partie(joueur* player, int round){
     
     // Initialise la grille
     char grille[MAX_LINE][MAX_COLONNE];
-
     creerGrille(grille);
 
     printf("\n--------GAME %d START--------\n", round);
@@ -13,13 +12,13 @@ int partie(joueur* player, int round){
     
     int fin = 0; //definie la fin d'une partie
     int tour = 0; //definie le nombre de tour joué
-    char choixS[20];
+    char choixS[2];
     int choix;
 
     while (!fin)
     {
         
-        if ( (player + (tour%2))->isIA == true ){ //si le joueur1 est une IA   
+        if ( (player + (tour%2))->isIA == true ){ //si le joueur actuel est une IA   
             switch ( (player + tour%2)->whichIA) // On appele la fonction approprier à la bonne IA
             {
             case 0: // IA0
@@ -31,13 +30,18 @@ int partie(joueur* player, int round){
             case 2: // IA2
                 choix = ia2(grille, (player + (tour%2))->Jsign);
                 break;
+            case 3: // IA3
+                choix = ia3(grille, (player + (tour%2))->Jsign);
+                break;
+            case 4: //IA4
+                choix = ia4(grille, (player + (tour%2))->Jsign);
+                break;
             default: // Fonction non repertorier
                     printf("No function for this AI in the files.\n");
                     return -1;
                 break;
             }
             ajouterJeton(grille, (player + tour%2 )->Jsign, choix);
-            printf("%s place un jeton colonne :%d", (player + tour%2)->Jnom, (choix+1));
         }
         else{ // Si c'est un joueur humain
             printf("Select a column between 1 and 7:\n");
@@ -45,9 +49,10 @@ int partie(joueur* player, int round){
                 scanf("%s", choixS);
                 choix = atoi(choixS);
             }
-            while(ajouterJeton(grille, (player + tour%2 )->Jsign, choix-1) == -1);
-            printf("%s place un jeton colonne :%d", (player + tour%2)->Jnom, choix);
+            while(ajouterJeton(grille, (player + tour%2 )->Jsign, choix-1) != 0);
         }
+
+        afficheGrille(grille);
 
         // Verification de l'etat de la grille de jeu
         switch(verifGrille(grille, (player + tour%2 )->Jsign))
@@ -55,6 +60,8 @@ int partie(joueur* player, int round){
             case 0: // Rien a signaler
                 break;
             case 1: // Le joueur actuelle gagne la partie
+                
+                printf("\nVictory !!\n");
                 printf("The player %s won the game\n", (player + tour%2 )->Jnom );
                 printf("--------GAME %d OVER---------\n", round);
                 
@@ -62,7 +69,6 @@ int partie(joueur* player, int round){
                 break;
         }
 
-        afficheGrille(grille);
         if (tour == 41) //si aucun n'a gagné et que la grille est remplie
         {
             return 0;
@@ -105,29 +111,15 @@ void makelog(joueur * J, int nulle){
     strftime( buffer, 80, "%d-%m-%Y %H:%M:%S", pTime );
     strcat(buffer, ".csv");
 
-/*
-    printf("Date : %s\n", buffer);
-
-    if (fork() == 0) {
-
-        // Newly spawned child Process. This will be taken over by "mkdir date"
-        strcpy(arg[1], buffer);
-        int status_code = execvp(arg[0], arg);
-        if (status_code == -1)
-            printf("Error while making the date directory.\n");
-    }
-*/
-
     for (int i = 0; i < 3; i++)
         free(arg[i]);
         
     free(arg);
-    //free(buffer);
     
     // On écrit dans un fichier le rapport de la partie
     FILE *log;
     log = fopen(buffer, "w+");
-    fprintf(log, "%s\t%d\n%s\t%d\nDraw\t%d\nTotal\t%d\n",
+    fprintf(log, "%s\t%d\n%s\t%d\nTies\t%d\nTotal\t%d\n",
      J[0].Jnom,
       J[0].partieGagner,
        J[1].Jnom,
@@ -159,7 +151,9 @@ int main(int argc, char * argv[]){
     // fixé les parametres des joueurs
     joueur* joueurs = malloc( 2 * sizeof *joueurs);
 
-    fixesettings(argv[1], argv[2], joueurs);
+    if(fixesettings(argv[1], argv[2], joueurs, argv[0]) != 0){
+        return -1;
+    }
 
     int gagnant;
     for(int round = 1; round<=nbparties; round++){   //chaque partie
@@ -173,7 +167,7 @@ int main(int argc, char * argv[]){
         }
     }
 
-    printf("SUMMARY:\n%s: %d victories\n%s: %d victories\nDraw: %d\n",
+    printf("SUMMARY:\n%s: %d victories\n%s: %d victories\nTies: %d\n",
      joueurs[0].Jnom,
       joueurs[0].partieGagner,
        joueurs[1].Jnom,
@@ -186,5 +180,4 @@ int main(int argc, char * argv[]){
     free(joueurs);
 
     return 0;
-    
 }

@@ -12,7 +12,6 @@
 #include <stdbool.h>
 #include <time.h>
 #include <unistd.h>
-#include <math.h>
 
 void afficheGrille(char grille[MAX_LINE][MAX_COLONNE]);
 void creerGrille(char (*grille2)[MAX_COLONNE]);
@@ -28,7 +27,7 @@ typedef struct joueur
     int partieGagner;
 }joueur;
 
-int fixesettings(char *J1, char *J2, joueur* J);
+int fixesettings(char *J1, char *J2, joueur* J, char *prem_arg);
 
 int verifGrille(char (*grille2)[MAX_COLONNE], char signe);
 int partie(joueur* player, int round);
@@ -39,12 +38,20 @@ int ia1(char (*grille2)[MAX_COLONNE], char signe);
 //int minimax(int depth, int nodeIndex, int maximizingPlayer, int values[8], int alpha, int beta);
 
 
-int count_case(int *tab, char signe);
+int compte_case(int *tab, char signe);
+int calcule_score(int jeton, int libre, int enemy);
 int position_score(char (*grille2)[MAX_COLONNE], char signe);
 int nb_move_valide(char (*grille2)[MAX_COLONNE]);
 void position_move_valide(char (*grille2)[MAX_COLONNE], int *tab);
 int select_meilleur_move(char (*grille2)[MAX_COLONNE], char signe);
 
+typedef struct col_val {
+	int colonne, valeur;
+}col_val;
+
+col_val minmax(char (*grille2)[MAX_COLONNE], int profondeur, bool maximazingPlayer, char signe, int alpha, int beta);
 int ia2(char (*grille2)[MAX_COLONNE], char signe);
+int ia3(char (*grille2)[MAX_COLONNE], char signe);
+int ia4(char (*grille2)[MAX_COLONNE], char signe);
 
 #endif

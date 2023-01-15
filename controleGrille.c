@@ -65,7 +65,7 @@ int ajouterJeton(char (*grille2)[MAX_COLONNE], char signe, int colonne){
         }
     
     printf("This column is full ! Select another one:\n");
-    return -1;
+    return -2;
 }
 
 
@@ -73,8 +73,7 @@ int ajouterJeton(char (*grille2)[MAX_COLONNE], char signe, int colonne){
     Verifie si les conditions de victoires sont remplie sur la grille
 
     Retourne 0 si rien n'a été trouvé
-    Retourne 1 si le joueur 1 a reussi
-    Retourne 2 si le joueur 2 a reussi
+    Retourne 1 en cas de victoire d'un joueur
 
     Sinon retourne un code d'erreur
 */
@@ -94,7 +93,6 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
                 count = 0;
             
             if (count >= 4){
-                printf("\nVictory !!\n");
                 return 1;
             }
         }   
@@ -105,36 +103,32 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
         count = 0;
         for (int i = MAX_LINE-1; i >= 0; i--)
         {
-            if ( (*(*(grille2+i)+colonne)) == signe ){
+            if ( (*(*(grille2+i)+colonne)) == signe )
                 count++;
-            }
-            else{
+            else
                 count = 0;
-            }
             
             if (count >= 4){
-                printf("\nVictory !!\n");
-                return 1;
-                
+                return 1;     
             }
         }
     }
     
-    // Verifie les diagonales
+
+    /* Verifie les diagonales */
     //haut-gauche et bas-droite
     for(int i =(MAX_LINE-3); i < MAX_LINE; i++){
         for(int j = 3; j < MAX_COLONNE ; j++){            
             if( ((*(*(grille2+i)+j)) == signe) && ((*(*(grille2+(i-1))+(j-1))) == signe) && ((*(*(grille2+(i-2))+(j-2))) == signe) && ((*(*(grille2+(i-3))+(j-3))) == signe) ){
-                printf("\nVictory !!\n");
                 return 1; 
             }
         }
     }
+
     //bas-gauche et haut-droite
     for(int i =(MAX_LINE-3); i < MAX_LINE; i++){
         for(int j = 0; j < (MAX_COLONNE-3) ; j++){            
             if( ((*(*(grille2+i)+j)) == signe) && ((*(*(grille2+(i-1))+(j+1))) == signe) && ((*(*(grille2+(i-2))+(j+2))) == signe) && ((*(*(grille2+(i-3))+(j+3))) == signe) ){
-                printf("\nVictory !!\n");
                 return 1;
             }
         }

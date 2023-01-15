@@ -8,7 +8,7 @@
     Retourne -1 si il n'y a pas au moins une IA
     Retourne -2 si le nom du joueur est trop grand
 */
-int fixesettings(char *J1, char *J2, joueur* J){
+int fixesettings(char *J1, char *J2, joueur* J, char *prem_arg){
 
     bool findIA = false;
 
@@ -22,8 +22,19 @@ int fixesettings(char *J1, char *J2, joueur* J){
 
     if(!findIA){
         printf("There is no AI's name among the players' names.\n");
-        printf("Ex: './main Charles IA0' or even './main IA1 Pablo'\n");
+        printf("Ex: '%s Charles IA0' or even '%s IA1 Pablo'\n", prem_arg, prem_arg);
         return -1;
+    }
+    
+    if ( strlen(J1) > MAX_PSEUDO_LEN)
+    {
+        printf("The first player's name '%s' is too long (must be less than 20 characters)\n", J1);
+        return -2;
+    }
+    if ( strlen(J1) > MAX_PSEUDO_LEN)
+    {
+        printf("The seconde player's name '%s' is too long (must be less than 20 characters)\n", J2);
+        return -2;
     }
     
         
@@ -65,6 +76,5 @@ int fixesettings(char *J1, char *J2, joueur* J){
         }
     } 
     
-    return 0;
-
+    return 0; // Les paramètres du programme on été fixés
 }
