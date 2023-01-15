@@ -16,13 +16,6 @@ void afficheGrille(char grille[MAX_LINE][MAX_COLONNE]);
 void creerGrille(char (*grille2)[MAX_COLONNE]);
 int ajouterJeton(char (*grille2)[MAX_COLONNE], char signe, int colonne);
 
-/*
-const char * IA[] = {
-    "IA0",
-    "IA1"
-};
-*/
-
 typedef struct joueur
 {
     char Jnom[MAX_PSEUDO_LEN]; // Le nom du joueur
@@ -38,6 +31,7 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe);
 int partie(joueur* player, int round);
 
 int ia0(char (*grille2)[MAX_COLONNE], char signe);
+int ia1(char (*grille2)[MAX_COLONNE], char signe);
 
 #endif
 

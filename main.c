@@ -23,10 +23,10 @@ int partie(joueur* player, int round){
             switch ( (player + tour%2)->whichIA) // On appele la fonction approprier à la bonne IA
             {
             case 0: // IA0
-                choix = ia0(grille, (player + 0)->Jsign);
+                choix = ia0(grille, (player + (tour%2))->Jsign);
                 break;
             case 1: // IA1
-                //choix = ia0(grille, (player + 0)->Jsign);
+                choix = ia1(grille, (player + (tour%2))->Jsign);
                 break;
             default: // Fonction non repertorier
                     printf("No function for this AI in the files.\n");
