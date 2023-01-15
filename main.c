@@ -141,6 +141,14 @@ int verifGrille(char (*grille2)[MAX_COLONNE] ){ //verifie si quatre jetons du me
             }
         }
     }
+/*
+    for (int i = 0; i < ; i++)
+    {
+
+
+
+    }
+*/   
 
 }
 
@@ -152,6 +160,8 @@ int partie(joueur* player, int round){
     creerGrille(grille);
 
     printf("\n--------GAME %d START--------\n", round);
+
+    afficheGrille(grille);
     
     int fin = 0; //definie la fin d'une partie
     int tour = 0; //definie le nombre de tour joué
@@ -310,6 +320,13 @@ int main(int argc, char * argv[]){
             joueurs[gagnant-1].partieGagner++;
         }
     }
+
+    printf("SUMMARY:\n%s: %d victories\n%s: %d victories\nDraw: %d\n",
+     joueurs[0].Jnom,
+      joueurs[0].partieGagner,
+       joueurs[1].Jnom,
+        joueurs[1].partieGagner,
+         partieNulles);
 
     return 0;
     
