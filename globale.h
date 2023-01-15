@@ -12,7 +12,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <unistd.h>
-#include <pthread.h>
+#include <math.h>
 
 void afficheGrille(char grille[MAX_LINE][MAX_COLONNE]);
 void creerGrille(char (*grille2)[MAX_COLONNE]);
@@ -34,6 +34,9 @@ int partie(joueur* player, int round);
 
 int ia0(char (*grille2)[MAX_COLONNE], char signe);
 int ia1(char (*grille2)[MAX_COLONNE], char signe);
+
+int minimax(int depth, int nodeIndex, int maximizingPlayer, int values[8], int alpha, int beta);
 int ia2(char (*grille2)[MAX_COLONNE], char signe);
 
 #endif
+
