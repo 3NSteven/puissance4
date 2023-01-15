@@ -16,6 +16,7 @@
 
 void afficheGrille(char grille[MAX_LINE][MAX_COLONNE]);
 void creerGrille(char (*grille2)[MAX_COLONNE]);
+int colonne_rempli(char (*grille2)[MAX_COLONNE], int colonne);
 int ajouterJeton(char (*grille2)[MAX_COLONNE], char signe, int colonne);
 
 typedef struct joueur
@@ -35,8 +36,15 @@ int partie(joueur* player, int round);
 int ia0(char (*grille2)[MAX_COLONNE], char signe);
 int ia1(char (*grille2)[MAX_COLONNE], char signe);
 
-int minimax(int depth, int nodeIndex, int maximizingPlayer, int values[8], int alpha, int beta);
+//int minimax(int depth, int nodeIndex, int maximizingPlayer, int values[8], int alpha, int beta);
+
+
+int count_case(int *tab, char signe);
+int position_score(char (*grille2)[MAX_COLONNE], char signe);
+int nb_move_valide(char (*grille2)[MAX_COLONNE]);
+void position_move_valide(char (*grille2)[MAX_COLONNE], int *tab);
+int select_meilleur_move(char (*grille2)[MAX_COLONNE], char signe);
+
 int ia2(char (*grille2)[MAX_COLONNE], char signe);
 
 #endif
-

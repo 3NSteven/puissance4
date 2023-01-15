@@ -31,6 +31,20 @@ void creerGrille(char (*grille2)[MAX_COLONNE]){
     }
 }
 
+
+/*
+	Retourne 1 si la colonne est jouable
+	Retourne 0 si la colonn est pleine
+*/
+int colonne_rempli(char (*grille2)[MAX_COLONNE], int colonne){
+    // Si la ligne 0 de la colonne est libre
+	if ((*(*(grille2)+colonne)) == ' ') 
+		return 1;
+
+	return 0; // Sinon la colonne est remplie
+}
+
+
 /*
     Ajoute le jeton du joueur a la colonne selectionné
 
@@ -43,23 +57,15 @@ int ajouterJeton(char (*grille2)[MAX_COLONNE], char signe, int colonne){
         return -1;
     }
 
-    for (int i = 5; i >= 0; i--)    //verifie que la case n'est pas deja remplie (recherche de bas en haut pour savoir ou le jeton ajoute va atterir)
-    {
-
+    for (int i = 5; i >= 0; i--)    //verifie que la colonne n'est pas deja remplie (recherche de bas en haut pour savoir ou le jeton ajoute va atterir)
         if( (*(*(grille2+i)+colonne)) == ' ')
         {
             *(*(grille2 + i) + colonne) = signe;
-            afficheGrille(grille2); 
             return 0;
         }
-        else if( i == 0 ){
-            afficheGrille(grille2); 
-            printf("This column is full ! Select another one:\n");
-            return -1;
-        }
-
-    }
-
+    
+    printf("This column is full ! Select another one:\n");
+    return -1;
 }
 
 
@@ -82,15 +88,13 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
         count = 0;
         for (int j = 0; j < MAX_COLONNE; j++)
         {
-            if ( (*(*(grille2+i)+j)) == signe ){
+            if ( (*(*(grille2+i)+j)) == signe )
                 count++;
-            }
-            else{
+            else
                 count = 0;
-            }
             
             if (count >= 4){
-                printf("Victory !!\n");
+                printf("\nVictory !!\n");
                 if(signe == 'X'){
                     return 1;
                 }
@@ -115,7 +119,7 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
             }
             
             if (count >= 4){
-                printf("Victory !!\n");
+                printf("\nVictory !!\n");
                 if(signe == 'X'){
                     return 1;
                 }
@@ -130,12 +134,9 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
     // Verifie les diagonales
     //haut-gauche et bas-droite
     for(int i =(MAX_LINE-3); i < MAX_LINE; i++){
-        for(int j = 3; j < MAX_COLONNE ; j++){
-
-            //printf("[%c][%c][%c][%c] avec i=%d, et j=%d\n", (*(*(grille2+i)+j)), (*(*(grille2+(i+1))+(j+1))), (*(*(grille2+(i+2))+(j+2))), (*(*(grille2+(i+3))+(j+3))), i, j);
-            
+        for(int j = 3; j < MAX_COLONNE ; j++){            
             if( ((*(*(grille2+i)+j)) == signe) && ((*(*(grille2+(i-1))+(j-1))) == signe) && ((*(*(grille2+(i-2))+(j-2))) == signe) && ((*(*(grille2+(i-3))+(j-3))) == signe) ){
-                printf("Victory !!\n");
+                printf("\nVictory !!\n");
                 if (signe == 'X'){
                     return 1;
                 }
@@ -147,12 +148,9 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
     }
     //bas-gauche et haut-droite
     for(int i =(MAX_LINE-3); i < MAX_LINE; i++){
-        for(int j = 0; j < (MAX_COLONNE-3) ; j++){
-
-            //printf("[%c][%c][%c][%c] avec i=%d, et j=%d\n", (*(*(grille2+i)+j)), (*(*(grille2+(i+1))+(j+1))), (*(*(grille2+(i+2))+(j+2))), (*(*(grille2+(i+3))+(j+3))), i, j);
-            
+        for(int j = 0; j < (MAX_COLONNE-3) ; j++){            
             if( ((*(*(grille2+i)+j)) == signe) && ((*(*(grille2+(i-1))+(j+1))) == signe) && ((*(*(grille2+(i-2))+(j+2))) == signe) && ((*(*(grille2+(i-3))+(j+3))) == signe) ){
-                printf("Victory !!\n");
+                printf("\nVictory !!\n");
                 if (signe == 'X'){
                     return 1;
                 }
@@ -163,4 +161,5 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
         }
     }
 
+    return 0;
 }

@@ -18,7 +18,7 @@ int partie(joueur* player, int round){
 
     while (!fin)
     {
-       
+        
         if ( (player + (tour%2))->isIA == true ){ //si le joueur1 est une IA   
             switch ( (player + tour%2)->whichIA) // On appele la fonction approprier à la bonne IA
             {
@@ -37,6 +37,7 @@ int partie(joueur* player, int round){
                 break;
             }
             ajouterJeton(grille, (player + tour%2 )->Jsign, choix);
+            printf("%s place un jeton colonne :%d", (player + tour%2)->Jnom, (choix+1));
         }
         else{ // Si c'est un joueur humain
             printf("Select a column between 1 and 7:\n");
@@ -45,6 +46,7 @@ int partie(joueur* player, int round){
                 choix = atoi(choixS);
             }
             while(ajouterJeton(grille, (player + tour%2 )->Jsign, choix-1) == -1);
+            printf("%s place un jeton colonne :%d", (player + tour%2)->Jnom, choix);
         }
 
         // Verification de l'etat de la grille de jeu
@@ -64,12 +66,12 @@ int partie(joueur* player, int round){
                 break;
         }
 
+        afficheGrille(grille);
         if (tour == 41) //si aucun n'a gagné et que la grille est remplie
         {
             return 0;
         }
         
-
         tour++;
     }
 
