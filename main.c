@@ -42,15 +42,14 @@ void creerGrille(char (*grille2)[MAX_COLONNE]){
 
     Retourne 0 ou un code d'erreur
 */
-int ajouterJeton(char (*grille2)[MAX_COLONNE], int colonne){
-
+int ajouterJeton(char (*grille2)[MAX_COLONNE], char signe, int colonne){
 
     for (int i = 5; i >= 0; i--)
     {
 
         if( (*(*(grille2+i)+colonne)) == ' ')
         {
-            *(*(grille2 + i) + colonne) = 'X';
+            *(*(grille2 + i) + colonne) = signe;
             afficheGrille(grille2); 
             return 0;
         }
@@ -64,31 +63,58 @@ int ajouterJeton(char (*grille2)[MAX_COLONNE], int colonne){
 
 }
 
-int partie(char *J1, char *J2, int partie){
+int partie(joueur* player, int round){
+    
+    // Initialise la gille
+    char grille[6][7];
 
-    //initialise la grille
-    //creerGrille();
+    creerGrille(grille);
 
-    printf("\n--------GAME %d START--------\n", partie);
+    printf("\n--------GAME %d START--------\n", round);
     
     int fin = 0; //definie la fin d'une partie
     int tour = 0; //definie le nombre de tour joué
+    int choix;
 
     while (!fin)
     {
        if (tour%2 == 0) // Tour du Joueur1
        {
-           
+            if ( (player + 0)->isIA == true )    //si le joueur1 est une IA
+            {   
+                //((player + 0)->Jnom )
+
+                
+            }
+            else{
+                printf("Select a column between 1 and 7:\n");
+                scanf("%d", &choix);
+                while(ajouterJeton(grille, (player + 0 )->Jsign, choix) == -1){
+                    scanf("%d", &choix);
+                }
+            }
        }
        else // Tour du Joueur2
        {
+           if ( (player + 10)->isIA == true )    //si le joueur1 est une IA
+            {   
+                //((player + 1)->Jnom )
 
+                
+            }
+            else{
+                printf("Select a column between 1 and 7:\n");
+                scanf("%d", &choix);
+                while(ajouterJeton(grille, (player + 1 )->Jsign, choix) == -1){
+                    scanf("%d", &choix);
+                }
+            }    
        }
 
        tour++;
     }
 
-    printf("--------GAME %d OVER---------\n\n", partie);
+    printf("--------GAME %d OVER---------\n\n", round);
 
 }
 
@@ -98,16 +124,18 @@ int partie(char *J1, char *J2, int partie){
 
     Retourne 0 ou un code d'erreur
     Retourne -1 si il n'y a pas au moins une IA
+    Retourne -2 si le nom du joueur est trop grand
 */
 int fixesettings(char *J1, char *J2, joueur* J){
 
     bool findIA = false;
-    for (int i = 0; i < 2; i++)
+
+    int i = 0;
+    while(IA[i])
     {
         if ((strcmp(J1, IA[i]) == 0) || (strcmp(J2, IA[i]) == 0))
-        { 
-           findIA = true; 
-        }
+            findIA = true;
+        i++;
     }
 
     if(!findIA){
@@ -115,20 +143,44 @@ int fixesettings(char *J1, char *J2, joueur* J){
         printf("Ex: './main Charles IA0' ou encore './main IA1 Pablo'\n");
         return -1;
     }
-    else{
+    
         
-        for (int i = 0; i < 1; i++)
-        {
-            if(i == 0){
-                strcpy( J->Jnom, J1);
+    for (int i = 0; i < 2; i++)
+    {
+        if(i == 0){
+            strcpy( (J+0)->Jnom, J1);
+            (J+0)->Jsign = 'X';
+            int i = 0;
+            while(IA[i])
+            {
+                if ( strcmp(J1, IA[i]) == 0)
+                {
+                    (J+0)->isIA = true;
+                    break;
+                }
+                else{ (J+0)->isIA = false; }
+                i++;
             }
-            else{
-                strcpy( (J+1)->Jnom , J2);
-            }
+            (J+0)->partieGagner = 0;
         }
-        
-    }
-
+        else{
+            strcpy( (J+1)->Jnom, J2);
+            (J+1)->Jsign = 'O';
+            int i = 0;
+            while(IA[i])
+            {
+                if (strcmp(J2, IA[i]) == 0 )
+                {
+                    (J+1)->isIA = true;
+                    break;
+                }
+                else{ (J+1)->isIA = false; }
+                i++;
+            }
+            (J+1)->partieGagner = 0;
+        }
+    } 
+    
 }
 
 
@@ -149,9 +201,6 @@ int main(int argc, char * argv[]){
     printf("Player 2 : %s\n", argv[2]);
     printf("Number of Rounds : %d\n", nbparties);
 
-    // Initialise la gille
-    char grille[6][7];
-
     // fixé les parametres des joueurs
     joueur* joueurs = malloc( 2 * sizeof *joueurs);
     
@@ -162,16 +211,25 @@ int main(int argc, char * argv[]){
     printf("%s\n", joueurs[0].Jnom);
     printf("%s\n", joueurs[1].Jnom);
 
+    printf("%c\n", joueurs[0].Jsign);
+    printf("%c\n", joueurs[1].Jsign);
+
+    printf("%d\n", joueurs[0].isIA);
+    printf("%d\n", joueurs[1].isIA);
+
+    printf("%d\n", joueurs[0].partieGagner);
+    printf("%d\n", joueurs[1].partieGagner);
+
+
     /*
     for (int i = 0; i < 7; i++)
     {
         ajouterJeton(grille, 3);
     }
     */
-
-    /*
-    for(int partie = 1; partie<=nbparties; partie++){   //chaque partie
-        //partie(joueur1, joueur2, partie);
+    
+    for(int round = 1; round<=nbparties; round++){   //chaque partie
+        partie(joueurs, round);
     }
-    */
+    
 }
