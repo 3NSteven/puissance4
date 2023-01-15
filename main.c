@@ -68,6 +68,86 @@ int ajouterJeton(char (*grille2)[MAX_COLONNE], char signe, int colonne){
 
 }
 
+/*
+    Verifie si les conditions de victoires sont remplie sur la grille
+
+    Retourne 0 si rien n'a été trouvé
+    Retourne 1 si le joueur 1 a reussi
+    Retourne 2 si le joueur 2 a reussi
+
+    Sinon retourne un code d'erreur
+*/
+int verifGrille(char (*grille2)[MAX_COLONNE] ){ //verifie si quatre jetons du meme joueur ont ete alignes
+
+    // Verifie les lignes
+    int count_x, count_o;
+    for (int i = 0; i < MAX_LINE; i++)
+    {
+        count_x = 0;
+        count_o = 0;
+        for (int j = 0; j < MAX_COLONNE; j++)
+        {
+            if ( (*(*(grille2+i)+j)) == 'X' ){
+                count_o = 0;
+                count_x++;
+            }
+            else if ( (*(*(grille2+i)+j)) == 'O' ){
+                count_x = 0;
+                count_o++;
+            }
+            else{
+                count_x = 0;
+                count_o = 0;
+            }
+            
+            if (count_x >= 4){
+                printf("Victoire !!\n");
+                break;
+                return 1;
+            }
+            if (count_o >= 4){
+                printf("Victoire !!\n");
+                break;
+                return 2;
+            }
+        }
+        
+    }
+
+    // Verifie les colonne
+    for (int colonne = MAX_COLONNE-1; colonne >= 0; colonne--){
+        int victoireX = 0;
+        int victoireO = 0;
+        for (int i = MAX_LINE-1; i >= 0; i--)
+        {
+            if(victoireX >= 4 ){
+                printf("Victoire !!\n");
+                break;
+                return 1;
+            }
+            else if(victoireO >= 4){
+                printf("Victoire !!\n");
+                break;
+                return 2;
+            }
+            else if( (*(*(grille2+i)+colonne)) == 'X')
+            {
+                victoireO = 0;
+                victoireX++;
+            }
+            else if( (*(*(grille2+i)+colonne)) == 'O'){
+                victoireX = 0;
+                victoireO++;
+            }
+            else if( (*(*(grille2+i)+colonne)) == ' '){
+                victoireX = 0;
+                victoireO = 0;
+            }
+        }
+    }
+
+}
+
 int partie(joueur* player, int round){
     
     // Initialise la gille
@@ -110,7 +190,9 @@ int partie(joueur* player, int round){
             }
             while(ajouterJeton(grille, (player + tour%2 )->Jsign, choix-1) == -1);
         }
-       tour++;
+
+        verifGrille(grille);
+        tour++;
     }
 
     printf("--------GAME %d OVER---------\n\n", round);
@@ -204,17 +286,8 @@ int main(int argc, char * argv[]){
 
     // fixé les parametres des joueurs
     joueur* joueurs = malloc( 2 * sizeof *joueurs);
-    
-    //strcpy(joueurs[i].Jnom, Nomjoueur[i]);
 
     fixesettings(argv[1], argv[2], joueurs);
-
-    /*
-    for (int i = 0; i < 7; i++)
-    {
-        ajouterJeton(grille, 3);
-    }
-    */
     
     for(int round = 1; round<=nbparties; round++){   //chaque partie
         partie(joueurs, round);
