@@ -102,7 +102,7 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
         }   
     }
 
-    // Verifie les colonne
+    // Verifie les colonnes
     for (int colonne = 0; colonne < MAX_COLONNE; colonne++){
         count = 0;
         for (int i = MAX_LINE-1; i >= 0; i--)
@@ -127,13 +127,14 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
         }
     }
     
-
+    // Verifie les diagonales
+    //haut-gauche et bas-droite
     for(int i =(MAX_LINE-3); i < MAX_LINE; i++){
-        for(int j = 0; j < (MAX_COLONNE-3) ; j++){
+        for(int j = 3; j < MAX_COLONNE ; j++){
 
-            //printf("[%d;%d][%d;%d][%d;%d][%d;%d]", i, j, (i-1), (j+1), (i-2), (j+2), (i-3), (j+3));
+            //printf("[%c][%c][%c][%c] avec i=%d, et j=%d\n", (*(*(grille2+i)+j)), (*(*(grille2+(i+1))+(j+1))), (*(*(grille2+(i+2))+(j+2))), (*(*(grille2+(i+3))+(j+3))), i, j);
             
-            if( ((*(*(grille2+i)+j)) == signe) && ((*(*(grille2+(i-1))+(j+1))) == signe) && ((*(*(grille2+(i-2))+(j+2))) == signe) && ((*(*(grille2+(i-3))+(j+3))) == signe) ){
+            if( ((*(*(grille2+i)+j)) == signe) && ((*(*(grille2+(i-1))+(j-1))) == signe) && ((*(*(grille2+(i-2))+(j-2))) == signe) && ((*(*(grille2+(i-3))+(j-3))) == signe) ){
                 printf("Victoire !!\n");
                 if (signe == 'X'){
                     return 1;
@@ -144,15 +145,13 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
             }
         }
     }
- 
-    //printf("\n\n");
-
+    //bas-gauche et haut-droite
     for(int i =(MAX_LINE-3); i < MAX_LINE; i++){
         for(int j = 0; j < (MAX_COLONNE-3) ; j++){
 
-            //printf("[%d;%d][%d;%d][%d;%d][%d;%d]", i, j, (i+1), (j+1), (i+2), (j+2), (i+3), (j+3));
+            //printf("[%c][%c][%c][%c] avec i=%d, et j=%d\n", (*(*(grille2+i)+j)), (*(*(grille2+(i+1))+(j+1))), (*(*(grille2+(i+2))+(j+2))), (*(*(grille2+(i+3))+(j+3))), i, j);
             
-            if( ((*(*(grille2+i)+j)) == signe) && ((*(*(grille2+(i+1))+(j+1))) == signe) && ((*(*(grille2+(i+2))+(j+2))) == signe) && ((*(*(grille2+(i+3))+(j+3))) == signe) ){
+            if( ((*(*(grille2+i)+j)) == signe) && ((*(*(grille2+(i-1))+(j+1))) == signe) && ((*(*(grille2+(i-2))+(j+2))) == signe) && ((*(*(grille2+(i-3))+(j+3))) == signe) ){
                 printf("Victoire !!\n");
                 if (signe == 'X'){
                     return 1;
