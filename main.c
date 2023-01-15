@@ -75,7 +75,7 @@ int partie(joueur* player, int round){
         tour++;
     }
 
-    
+    return -2;  //erreur
 
 }
 
@@ -131,7 +131,7 @@ void makelog(joueur * J, int nulle){
     // On écrit dans un fichier le rapport de la partie
     FILE *log;
     log = fopen(buffer, "w+");
-    fprintf(log, "%s\t%d\n%s\t%d\nDraw\t%d\nTotal\t%d\n",
+    fprintf(log, "%s\t%d\n%s\t%d\nTie\t%d\nTotal\t%d\n",
      J[0].Jnom,
       J[0].partieGagner,
        J[1].Jnom,
@@ -177,7 +177,7 @@ int main(int argc, char * argv[]){
         }
     }
 
-    printf("SUMMARY:\n%s: %d victories\n%s: %d victories\nDraw: %d\n",
+    printf("SUMMARY:\n%s: %d victories\n%s: %d victories\nTie: %d\n",
      joueurs[0].Jnom,
       joueurs[0].partieGagner,
        joueurs[1].Jnom,

@@ -65,4 +65,6 @@ int fixesettings(char *J1, char *J2, joueur* J){
         }
     } 
     
+    return -2;  //erreur
+    
 }

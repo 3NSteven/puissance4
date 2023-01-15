@@ -1,5 +1,7 @@
 #include "globale.h"
 
+#define NIVEAU_DE_RECHERCHE 3
+
 // Time : 1:05:45 / 1:27:28
 
 typedef struct col_val {
@@ -22,13 +24,13 @@ int make_score(int jeton, int libre, int enemy){
 	int score = 0;
 
 	if (jeton == 4){
-		score = score+100;
+		score = score+9999;
 	}
 	else if (jeton == 3 && libre == 1){
-		score = score+5;
+		score = score+100;
 	}
 	else if (jeton == 2 && libre == 2){
-		score = score+2;
+		score = score+30;
 	}
 
 	if (enemy == 3 && libre == 1)
@@ -195,7 +197,7 @@ void position_move_valide(char (*grille2)[MAX_COLONNE], int *tab){
 int select_meilleur_move(char (*grille2)[MAX_COLONNE], char signe){
 
 	char grille_temp[MAX_LINE][MAX_COLONNE];
-	int best_score = -10000, score;
+	int best_score = -999999, score;
 
 	int nb_valide = nb_move_valide(grille2); // Nombre de position valide
 	int position_valide[nb_valide];
@@ -227,6 +229,8 @@ int select_meilleur_move(char (*grille2)[MAX_COLONNE], char signe){
 }
 
 col_val minmax(char (*grille2)[MAX_COLONNE], int profondeur, bool maximazingPlayer, char signe){
+
+	//int resultat = verifGrille(grille2, (player + tour%2 )->Jsign);
 	col_val col_val, new_score;
 	int value, colonne;
 	char enemy;
@@ -244,12 +248,24 @@ col_val minmax(char (*grille2)[MAX_COLONNE], int profondeur, bool maximazingPlay
 		col_val.colonne = -1;
 		if (profondeur != 0)
 		{
-			if (verifGrille(grille2, signe) == 1)
-				col_val.valeur = (int) INFINITY;
-			else if (verifGrille(grille2, signe) == 2)
-				col_val.valeur = (int) -INFINITY;
-			else
-				col_val.valeur = 0;
+			if(signe == 'X'){	//si le signe d'ia2 est X
+				if (verifGrille(grille2, signe) == 2)	//la victoire de O est a eviter absolument
+					col_val.valeur = (int) -999999;
+				else if (verifGrille(grille2, signe) == 1)	//la victoire de X est a chercher absolument
+					col_val.valeur = (int) 999999;
+				else
+					col_val.valeur = 0;
+			}
+			else if(signe == 'O'){	//si le signe d'ia2 est O
+				if (verifGrille(grille2, signe) == 1)	//la victoire de X est a eviter absolument
+					col_val.valeur = (int) -999999;
+				else if (verifGrille(grille2, signe) == 2)	//la victoire de O est a chercher absolument
+					col_val.valeur = (int) 999999;
+				else
+					col_val.valeur = 0;
+
+			}
+			
 		}
 		else{
 			col_val.valeur = position_score(grille2, signe);
@@ -266,7 +282,7 @@ col_val minmax(char (*grille2)[MAX_COLONNE], int profondeur, bool maximazingPlay
 	if (maximazingPlayer)
 	{
 		printf("\n IA = TRUE \n");
-		col_val.valeur = (int) -INFINITY;
+		col_val.valeur = (int) -999999;
 
 		col_val.colonne = pos[rand()%nb_valide]; // On prend une colonne au hazar parmis les disponibles
 		printf("nb_position possible IA %d\n", nb_valide);
@@ -295,7 +311,7 @@ col_val minmax(char (*grille2)[MAX_COLONNE], int profondeur, bool maximazingPlay
 	}
 	else{
 		printf("\n IA = FALSE \n");
-		col_val.valeur = (int) INFINITY;
+		col_val.valeur = (int) 999999;
 
 		col_val.colonne = pos[rand()%nb_valide]; // On prend une colonne au hazar parmis les disponibles
 		printf("nb_position possible Joueur %d\n", nb_valide);
@@ -333,42 +349,10 @@ col_val minmax(char (*grille2)[MAX_COLONNE], int profondeur, bool maximazingPlay
     IA qui joue avec la strategie min-max
 */
 int ia2(char (*grille2)[MAX_COLONNE], char signe){
-
-	/*
-    int max = (int) INFINITY;
-    int min = (int) -INFINITY;
-
-	
-	char grille_temp[MAX_LINE][MAX_COLONNE];
-	for ( int i = 0; i < MAX_LINE; ++i )
-		memcpy(grille_temp[i], grille2[i], MAX_COLONNE);
-	*/
-
-	/*
-	int values[MAX_COLONNE];
-	for (int i = 0; i < MAX_COLONNE; i++)
-	{
-		values[i] = compte(i, signe, grille_temp);
-	}
-	*/
-	
-	/*
-	printf("|");
-	for (int i = 0; i < MAX_COLONNE; i++)
-	{
-		printf(" %d |", values[i]);
-	}
-	printf("\n");
-	*/
-	
-
-    // Driver Code
-    //int values[7]={1, 2, 3, 4, 5, 6, 7};
-
-    //printf("The optimal value is : %d\n", minimax(0, 0, true, values, min, max));
+        
 
 	col_val resultat;
-	resultat = minmax(grille2, 2, true, signe);
+	resultat = minmax(grille2, NIVEAU_DE_RECHERCHE, true, signe);
 
 	printf("\n %d, %d \n", resultat.valeur, resultat.colonne);
 
