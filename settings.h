@@ -4,6 +4,8 @@
 #define MAX_LINE 6
 #define MAX_COLONNE 7
 
+#define MAX_PSEUDO_LEN 20
+
 #include <string.h>
 
 #include <stdbool.h>
@@ -20,13 +22,13 @@ const char * IA[] = {
 
 typedef struct joueur
 {
-    char *Jnom; // Le nom du joueur
+    char Jnom[MAX_PSEUDO_LEN]; // Le nom du joueur
     char Jsign; // Quel jeton il posséde
     bool isIA; // Si c'est une IA
     int partieGagner;
 }joueur;
 
 
-int partie(char *J1, char *J2);
+int partie(char *J1, char *J2, int partie);
 
 #endif

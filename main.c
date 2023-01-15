@@ -56,7 +56,7 @@ int ajouterJeton(char (*grille2)[MAX_COLONNE], int colonne){
         }
         else if( i == 0 ){
             afficheGrille(grille2); 
-            printf("Cette colonne est plein, selectionné une autre colonne:\n\n");
+            printf("This column is full ! Choose another one:\n\n");
             return -1;
         }
 
@@ -64,10 +64,16 @@ int ajouterJeton(char (*grille2)[MAX_COLONNE], int colonne){
 
 }
 
-int partie(char *J1, char *J2){
+int partie(char *J1, char *J2, int partie){
 
+    //initialise la grille
+    //creerGrille();
+
+    printf("\n--------GAME %d START--------\n", partie);
+    
     int fin = 0; //definie la fin d'une partie
     int tour = 0; //definie le nombre de tour joué
+
     while (!fin)
     {
        if (tour%2 == 0) // Tour du Joueur1
@@ -82,8 +88,17 @@ int partie(char *J1, char *J2){
        tour++;
     }
 
+    printf("--------GAME %d OVER---------\n\n", partie);
+
 }
 
+
+/*
+    Regle les parametres des joueurs (pseudo, signe, etc..)
+
+    Retourne 0 ou un code d'erreur
+    Retourne -1 si il n'y a pas au moins une IA
+*/
 int fixesettings(char *J1, char *J2, joueur* J){
 
     bool findIA = false;
@@ -101,9 +116,17 @@ int fixesettings(char *J1, char *J2, joueur* J){
         return -1;
     }
     else{
-
         
-
+        for (int i = 0; i < 1; i++)
+        {
+            if(i == 0){
+                strcpy( J->Jnom, J1);
+            }
+            else{
+                strcpy( (J+1)->Jnom , J2);
+            }
+        }
+        
     }
 
 }
@@ -117,20 +140,17 @@ int main(int argc, char * argv[]){
     if(argc == 3) nbparties = 1;
     else if(argc == 4) nbparties = atoi(argv[3]);
     else {
-        printf("Insctruction de lancement\n");
-        printf("%s Joueur1 Joueur2 (nbpartie) \n", argv[0]);
+        printf("Use:\n");
+        printf("%s Player1 Player2 (Rounds) \n", argv[0]);
         return 1;
     }
 
-    printf("Joueur 1 : %s\n", argv[1]);
-    printf("Joueur 2 : %s\n", argv[2]);
-    printf("Nombre de partie à lancer : %d\n", nbparties);
+    printf("Player 1 : %s\n", argv[1]);
+    printf("Player 2 : %s\n", argv[2]);
+    printf("Number of Rounds : %d\n", nbparties);
 
     // Initialise la gille
     char grille[6][7];
-
-    creerGrille(grille);
-    afficheGrille(grille);
 
     // fixé les parametres des joueurs
     joueur* joueurs = malloc( 2 * sizeof *joueurs);
@@ -139,6 +159,9 @@ int main(int argc, char * argv[]){
 
     fixesettings(argv[1], argv[2], joueurs);
 
+    printf("%s\n", joueurs[0].Jnom);
+    printf("%s\n", joueurs[1].Jnom);
+
     /*
     for (int i = 0; i < 7; i++)
     {
@@ -146,8 +169,9 @@ int main(int argc, char * argv[]){
     }
     */
 
-    for(int i = 0; i < nbparties; i++){
-        //partie(, ); 
+    /*
+    for(int partie = 1; partie<=nbparties; partie++){   //chaque partie
+        //partie(joueur1, joueur2, partie);
     }
-
+    */
 }
