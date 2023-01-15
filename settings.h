@@ -6,14 +6,18 @@
 
 #define MAX_PSEUDO_LEN 20
 
+#include <stdbool.h>
+
 void afficheGrille(char grille[MAX_LINE][MAX_COLONNE]);
 void creerGrille(char (*grille2)[MAX_COLONNE]);
 int ajouterJeton(char (*grille2)[MAX_COLONNE], char signe, int colonne);
 
+/*
 const char * IA[] = {
     "IA0",
     "IA1"
 };
+*/
 
 typedef struct joueur
 {
@@ -24,9 +28,12 @@ typedef struct joueur
     int partieGagner;
 }joueur;
 
-int partieNulles = 0;
+int fixesettings(char *J1, char *J2, joueur* J);
 
+int verifGrille(char (*grille2)[MAX_COLONNE], char signe);
 int partie(joueur* player, int round);
 
-#endif
+//int ia0(char (*grille2)[MAX_COLONNE], char signe);
 
+int partieNulles = 0;
+#endif

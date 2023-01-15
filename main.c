@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
 #include <stdbool.h>
 
 #include "settings.h"
@@ -77,85 +76,102 @@ int ajouterJeton(char (*grille2)[MAX_COLONNE], char signe, int colonne){
 
     Sinon retourne un code d'erreur
 */
-int verifGrille(char (*grille2)[MAX_COLONNE] ){ //verifie si quatre jetons du meme joueur ont ete alignes
+int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre jetons du meme joueur ont ete alignes
+
+    int count;
 
     // Verifie les lignes
-    int count_x, count_o;
     for (int i = 0; i < MAX_LINE; i++)
     {
-        count_x = 0;
-        count_o = 0;
+        count = 0;
         for (int j = 0; j < MAX_COLONNE; j++)
         {
-            if ( (*(*(grille2+i)+j)) == 'X' ){
-                count_o = 0;
-                count_x++;
-            }
-            else if ( (*(*(grille2+i)+j)) == 'O' ){
-                count_x = 0;
-                count_o++;
+            if ( (*(*(grille2+i)+j)) == signe ){
+                count++;
             }
             else{
-                count_x = 0;
-                count_o = 0;
+                count = 0;
             }
             
-            if (count_x >= 4){
+            if (count >= 4){
                 printf("Victoire !!\n");
-                return 1;
+                if(signe == 'X'){
+                    return 1;
+                }
+                else if(signe == 'O')
+                {
+                    return 2;
+                }
             }
-            if (count_o >= 4){
-                printf("Victoire !!\n");
-                return 2;
-            }
-        }
-        
+        }   
     }
 
     // Verifie les colonne
-    for (int colonne = MAX_COLONNE-1; colonne >= 0; colonne--){
-        int victoireX = 0;
-        int victoireO = 0;
+    for (int colonne = 0; colonne < MAX_COLONNE; colonne++){
+        count = 0;
         for (int i = MAX_LINE-1; i >= 0; i--)
         {
-            if(victoireX >= 4 ){
+            if ( (*(*(grille2+i)+colonne)) == signe ){
+                count++;
+            }
+            else{
+                count = 0;
+            }
+            
+            if (count >= 4){
                 printf("Victoire !!\n");
-                return 1;
-            }
-            else if(victoireO >= 4){
-                printf("Victoire !!\n");
-                return 2;
-            }
-            else if( (*(*(grille2+i)+colonne)) == 'X')
-            {
-                victoireO = 0;
-                victoireX++;
-            }
-            else if( (*(*(grille2+i)+colonne)) == 'O'){
-                victoireX = 0;
-                victoireO++;
-            }
-            else if( (*(*(grille2+i)+colonne)) == ' '){
-                victoireX = 0;
-                victoireO = 0;
+                if(signe == 'X'){
+                    return 1;
+                }
+                else if(signe == 'O')
+                {
+                    return 2;
+                }
             }
         }
     }
-/*
-    for (int i = 0; i < ; i++)
-    {
+    
 
+    for(int i =(MAX_LINE-3); i < MAX_LINE; i++){
+        for(int j = 0; j < (MAX_COLONNE-3) ; j++){
 
-
+            printf("[%d;%d][%d;%d][%d;%d][%d;%d]", i, j, (i-1), (j+1), (i-2), (j+2), (i-3), (j+3));
+            
+            if( (*(*(grille2+i)+j)) == signe && (*(*(grille2+(i-1))+(j+1))) == signe && (*(*(grille2+(i-2))+(j+2))) && (*(*(grille2+(i-3))+(j+3))) ){
+                if (signe == 'X'){
+                    return 1;
+                }
+                else{
+                    return 2;
+                }
+            }
+        }
     }
-*/   
+ 
+    printf("\n\n");
+
+    for(int i =(MAX_LINE-3); i < MAX_LINE; i++){
+        for(int j = 0; j < (MAX_COLONNE-3) ; j++){
+
+            printf("[%d;%d][%d;%d][%d;%d][%d;%d]", i, j, (i+1), (j+1), (i+2), (j+2), (i+3), (j+3));
+            
+            if( (*(*(grille2+i)+j)) == signe && (*(*(grille2+(i+1))+(j+1))) == signe && (*(*(grille2+(i+2))+(j+2))) && (*(*(grille2+(i+3))+(j+3))) ){
+                if (signe == 'X'){
+                    return 1;
+                }
+                else{
+                    return 2;
+                }
+            }
+        }
+    }
 
 }
 
 int partie(joueur* player, int round){
     
-    // Initialise la gille
-    char grille[6][7];
+    // Initialise la grille
+    char grille[MAX_LINE][MAX_COLONNE];
 
     creerGrille(grille);
 
@@ -171,24 +187,23 @@ int partie(joueur* player, int round){
     while (!fin)
     {
        
-        if ( (player + (tour%2))->isIA == true )    //si le joueur1 est une IA
-            {   
-            //((player + 0)->Jnom )
-            switch ( (player + tour%2)->whichIA)
+        if ( (player + (tour%2))->isIA == true ){ //si le joueur1 est une IA   
+            switch ( (player + tour%2)->whichIA) // On appele la fonction approprier à la bonne IA
             {
-            case 0:
+            case 0: // IA0
                 //choix = ia0(grille, (player + 0)->Jsign);
                 break;
-            case 1:
-
+            case 1: // IA1
+                //choix = ia0(grille, (player + 0)->Jsign);
                 break;
-            default:
+            default: // Fonction non repertorier
                     printf("No function for this AI in the files.\n");
+                    return -1;
                 break;
             }
-
+            ajouterJeton(grille, (player + tour%2 )->Jsign, choix);
         }
-        else{
+        else{ // Si c'est un joueur humain
             printf("Select a column between 1 and 7:\n");
             do{
                 scanf("%s", choixS);
@@ -197,16 +212,17 @@ int partie(joueur* player, int round){
             while(ajouterJeton(grille, (player + tour%2 )->Jsign, choix-1) == -1);
         }
 
-        switch(verifGrille(grille))
+        // Verification de l'etat de la grille de jeu
+        switch(verifGrille(grille, (player + tour%2 )->Jsign))
         {
-            case 0:
+            case 0: // Rien a signaler
                 break;
-            case 1:
+            case 1: // Le joueur 1 gagne la partie
                 printf("The player %s won the game\n", (player + tour%2 )->Jnom );
                 printf("--------GAME %d OVER---------\n", round);
                 return 1;
                 break;
-            case 2:
+            case 2: // Le joueur 2 gagne la partie
                 printf("The player %s won the game\n", (player + tour%2 )->Jnom );
                 printf("--------GAME %d OVER---------\n", round);
                 return 2;
@@ -327,6 +343,9 @@ int main(int argc, char * argv[]){
        joueurs[1].Jnom,
         joueurs[1].partieGagner,
          partieNulles);
+
+    // Libere l'espace allouer 
+    free(joueurs);
 
     return 0;
     
