@@ -60,6 +60,13 @@ int partie(joueur* player, int round){
                 return 2;
                 break;
         }
+
+        if (tour == 41) //si aucun n'a gagné et que la grille est remplie
+        {
+            return 0;
+        }
+        
+
         tour++;
     }
 
