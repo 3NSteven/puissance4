@@ -1,5 +1,8 @@
 #include "globale.h"
 
+/*
+    IA totalement aleatoire
+*/
 int ia0(char (*grille2)[MAX_COLONNE], char signe){
     int r = rand() % MAX_COLONNE;
 

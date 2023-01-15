@@ -90,7 +90,7 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
             }
             
             if (count >= 4){
-                printf("Victoire !!\n");
+                printf("Victory !!\n");
                 if(signe == 'X'){
                     return 1;
                 }
@@ -115,7 +115,7 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
             }
             
             if (count >= 4){
-                printf("Victoire !!\n");
+                printf("Victory !!\n");
                 if(signe == 'X'){
                     return 1;
                 }
@@ -135,7 +135,7 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
             //printf("[%c][%c][%c][%c] avec i=%d, et j=%d\n", (*(*(grille2+i)+j)), (*(*(grille2+(i+1))+(j+1))), (*(*(grille2+(i+2))+(j+2))), (*(*(grille2+(i+3))+(j+3))), i, j);
             
             if( ((*(*(grille2+i)+j)) == signe) && ((*(*(grille2+(i-1))+(j-1))) == signe) && ((*(*(grille2+(i-2))+(j-2))) == signe) && ((*(*(grille2+(i-3))+(j-3))) == signe) ){
-                printf("Victoire !!\n");
+                printf("Victory !!\n");
                 if (signe == 'X'){
                     return 1;
                 }
@@ -152,7 +152,7 @@ int verifGrille(char (*grille2)[MAX_COLONNE], char signe){ //verifie si quatre j
             //printf("[%c][%c][%c][%c] avec i=%d, et j=%d\n", (*(*(grille2+i)+j)), (*(*(grille2+(i+1))+(j+1))), (*(*(grille2+(i+2))+(j+2))), (*(*(grille2+(i+3))+(j+3))), i, j);
             
             if( ((*(*(grille2+i)+j)) == signe) && ((*(*(grille2+(i-1))+(j+1))) == signe) && ((*(*(grille2+(i-2))+(j+2))) == signe) && ((*(*(grille2+(i-3))+(j+3))) == signe) ){
-                printf("Victoire !!\n");
+                printf("Victory !!\n");
                 if (signe == 'X'){
                     return 1;
                 }

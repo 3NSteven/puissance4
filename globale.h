@@ -32,6 +32,6 @@ int partie(joueur* player, int round);
 
 int ia0(char (*grille2)[MAX_COLONNE], char signe);
 int ia1(char (*grille2)[MAX_COLONNE], char signe);
+int ia2(char (*grille2)[MAX_COLONNE], char signe);
 
 #endif
-

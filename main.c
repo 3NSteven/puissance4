@@ -28,6 +28,9 @@ int partie(joueur* player, int round){
             case 1: // IA1
                 choix = ia1(grille, (player + (tour%2))->Jsign);
                 break;
+            case 2: // IA2
+                choix = ia2(grille, (player + (tour%2))->Jsign);
+                break;
             default: // Fonction non repertorier
                     printf("No function for this AI in the files.\n");
                     return -1;

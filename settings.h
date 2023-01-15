@@ -3,7 +3,8 @@
 
 const char * IA[] = {
     "IA0",
-    "IA1"
+    "IA1",
+    "IA2"
 };
 
 #endif

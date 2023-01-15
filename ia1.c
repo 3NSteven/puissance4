@@ -1,5 +1,8 @@
 #include "globale.h"
 
+/*
+    IA qui essaye de jouer plus souvent au milieu de la grille
+*/
 int ia1(char (*grille2)[MAX_COLONNE], char signe){
     
     int tendance, r;
