@@ -77,6 +77,68 @@ int partie(joueur* player, int round){
 
 }
 
+void makelog(joueur * J, int nulle){
+
+    const char dossier[] = "logs";
+    char **arg = (char**) malloc(3 * sizeof(char*));
+    for (int i = 0; i < 3; i++)
+        arg[i] = (char*) malloc(200 * sizeof(char));
+  
+    strcpy(arg[0], "mkdir");
+    strcpy(arg[1], "logs");
+    arg[2] = NULL;
+
+    // access(dossier, 0) vaudra 0 si le dossier existe sinon -1
+    if (access(dossier, 0) == -1){
+        if (fork() == 0) {
+            int status_code = execvp(arg[0], arg);
+            if(status_code == -1)
+                printf("Error while making the logs directory.\n");
+        }
+        sleep(1);
+        printf("The logs directory has been succesfully made.\n");
+    }
+    chdir("logs");
+    
+
+    time_t timestamp = time( NULL );
+    struct tm * pTime = localtime( & timestamp );
+    char  *buffer = (char *) malloc( 200 * sizeof(char));
+    strftime( buffer, 80, "%d-%m-%Y %H:%M:%S", pTime );
+    strcat(buffer, ".csv");
+
+/*
+    printf("Date : %s\n", buffer);
+
+    if (fork() == 0) {
+
+        // Newly spawned child Process. This will be taken over by "mkdir date"
+        strcpy(arg[1], buffer);
+        int status_code = execvp(arg[0], arg);
+        if (status_code == -1)
+            printf("Error while making the date directory.\n");
+    }
+*/
+
+    for (int i = 0; i < 3; i++)
+        free(arg[i]);
+        
+    free(arg);
+    //free(buffer);
+    
+    // On écrit dans un fichier le rapport de la partie
+    FILE *log;
+    log = fopen(buffer, "w+");
+    fprintf(log, "%s\t%d\n%s\t%d\nDraw\t%d\nTotal\t%d\n",
+     J[0].Jnom,
+      J[0].partieGagner,
+       J[1].Jnom,
+        J[1].partieGagner,
+         nulle,
+          (J[0].partieGagner + J[1].partieGagner + nulle));
+    close(log);
+}
+
 
 int main(int argc, char * argv[]){
 
@@ -119,6 +181,8 @@ int main(int argc, char * argv[]){
        joueurs[1].Jnom,
         joueurs[1].partieGagner,
          partieNulles);
+
+    makelog(joueurs, partieNulles);
 
     // Libere l'espace allouer 
     free(joueurs);

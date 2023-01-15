@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <unistd.h>
+#include <pthread.h>
 
 void afficheGrille(char grille[MAX_LINE][MAX_COLONNE]);
 void creerGrille(char (*grille2)[MAX_COLONNE]);
